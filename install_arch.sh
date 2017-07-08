@@ -32,6 +32,7 @@ then
 	mount /dev/$Disco$partition /mnt
 elif [ $opcao == "2" ];
 then
+	parted /dev/$Disco print
 	echo Digite o começo e o fim da sua particião linux:
 	echo inicio linux:
 	read inicio_linux
@@ -53,7 +54,7 @@ then
 	particao_swap=$(($particao+1))	
 	mkswap /dev/$Disco$particao_swap
 	swapon /dev/$Disco$particao_swap
-	mount /dev/sda1/$Disco$particao /mnt
+	mount /dev/$Disco$particao /mnt
 fi
 read -n1 -r -p "Descomente o mirror requerido e salve com ctrl+x" key
 nano /etc/pacman.d/mirrorlist
@@ -61,25 +62,5 @@ pacstrap -i /mnt base base-devel
 genfstab -U /mnt > /mnt/etc/fstab
 cat /mnt/etc/fstab
 arch-chroot /mnt
-read -n1 -r -p "Procure e descomente a linguagem a ser ultilizada no sistema e salve com ctrl+x" key
-nano /etc/locale.gen
-locale-gen
-echo LANG=en_US.UTF-8 > /etc/locale.conf
-export LANG=en_US.UTF-8
-NEW_TIMEZONE=$(tzselect)
-test -n "$NEW_TIMEZONE" && cp -fp /usr/share/zoneinfo/"$NEW_TIMEZONE" /etc/localtime
-hwclock --systohc --utc
-pacman -S iw wpa_supplicant dialog
-pacman -S grub os-prober
-grub-install --recheck --target=i386-pc /dev/$Disco
-grub-mkconfig -o /boot/grub/grub.cfg
-echo "digite o nome do computador:"
-read swapnil
-echo $swapnil > /etc/hostname
-echo "digite a senha de rooot:"
-passwd
-exit
-umount -R /mnt
-reboot
 
 

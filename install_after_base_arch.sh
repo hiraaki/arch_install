@@ -9,6 +9,8 @@ test -n "$NEW_TIMEZONE" && cp -fp /usr/share/zoneinfo/"$NEW_TIMEZONE" /etc/local
 hwclock --systohc --utc
 pacman -S iw wpa_supplicant dialog
 pacman -S grub os-prober
+echo "Digite a disco ser instalado o grub"
+read Disco
 grub-install --recheck --target=i386-pc /dev/$Disco
 grub-mkconfig -o /boot/grub/grub.cfg
 echo "digite o nome do computador:"
@@ -20,7 +22,7 @@ echo "Digite seu usuario:"
 read user
 useradd -m -G wheel,users -s /bin/bash $user
 echo "digite a senha do Usuario:"
-passwd user
+passwd $user
 echo "Instalando sudo"
 pacman -S sudo
 read -n1 -r -p "Edite o arquivo decomentando a linha %wheel ALL=(ALL) ALL ctrl+x" key
